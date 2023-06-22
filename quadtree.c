@@ -36,7 +36,7 @@ QuadNode* geraQuadtree(Img* pic, float minError)
     // Converte o vetor RGBPixel para uma MATRIZ que pode acessada por pixels[linha][coluna]
     RGBPixel (*pixels)[pic->width] = (RGBPixel(*)[pic->height]) pic->img;
 
-    int grayPixels[originalWidth][originalHeight];
+    int grayPixels[originalHeight][originalWidth];
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
             // pixels[i][j] = pic->img[i * width + j];
@@ -51,7 +51,7 @@ QuadNode* geraQuadtree(Img* pic, float minError)
     return raiz;
 }
 
-void recursiveQuadtree(int width, int height, QuadNode* raiz, RGBPixel pixels[originalWidth][originalHeight], int grayPixels[originalWidth][originalHeight], float minError){
+void recursiveQuadtree(int width, int height, QuadNode* raiz, RGBPixel pixels[originalHeight][originalWidth], int grayPixels[originalHeight][originalWidth], float minError){
     int halfWidth = width / 2;
     int halfHeight = height / 2;
 
@@ -63,6 +63,7 @@ void recursiveQuadtree(int width, int height, QuadNode* raiz, RGBPixel pixels[or
     raiz->color[2] = corMedia.b;
 
     if (minError < erroRegiao && halfHeight > 0 && halfWidth > 0){
+        
         QuadNode* nw = newNode(raiz->x, raiz->y, halfWidth, halfHeight);
         QuadNode* ne = newNode(halfWidth + raiz->x, raiz->y, halfWidth, halfHeight);
         QuadNode* sw = newNode(raiz->x, halfHeight + raiz->y, halfWidth, halfHeight);
@@ -100,7 +101,7 @@ void recursiveQuadtree(int width, int height, QuadNode* raiz, RGBPixel pixels[or
 
 }
 
-long calculaErroRegiao(int x, int y, int width, int height, int grayPixels[originalWidth][originalHeight]){
+long calculaErroRegiao(int x, int y, int width, int height, int grayPixels[originalHeight][originalWidth]){
     int histograma[256] = { 0 };
     
     for (int i = y; i < height + y; i++){
@@ -132,7 +133,7 @@ long calculaErroRegiao(int x, int y, int width, int height, int grayPixels[origi
     return erroFinal;
 }
 
-RGBPixel calculaCorMedia(int x, int y, int width, int height, RGBPixel pixels[originalWidth][originalHeight]){
+RGBPixel calculaCorMedia(int x, int y, int width, int height, RGBPixel pixels[originalHeight][originalWidth]){
    int somaRed = 0, somaGreen = 0, somaBlue = 0, qtdPixels = 0;
 
     // Calcula a soma das componentes R, G e B
